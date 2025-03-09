@@ -2,8 +2,8 @@ import asyncio
 import os
 from random import randint
 import time
-from playsound import playsound
 import threading
+from playsound import playsound
 global caught_fish
 global fish_list
 global inventory
@@ -38,11 +38,10 @@ for i in range(len(fish_list)):
     inventory[fish_list[i] + "🐟"] = 0
 difficulty_level = 1
 
-def play_music():
-    # append script path to mp3 file
-    script_path = os.path.dirname(os.path.realpath(__file__))
+def play_music(filename):
+    playsound(filename)
 
-    playsound(os.path.join(script_path, "Procrastinating Jazz.mp3"))
+    
 
 async def menu():
     global caught_fish
@@ -195,8 +194,8 @@ async def settings_menu():
             
 
         elif setting_input == "music":
-            sound_thread = threading.Thread(target=play_music)
-            sound_thread.start()
+            threading.Thread(play_music("Procrastinating Jazz.mp3"))
+            
             
 
         elif setting_input == "reset":
