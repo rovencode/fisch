@@ -1,4 +1,5 @@
 import asyncio
+import os
 from random import randint
 import time
 from playsound import playsound
@@ -38,9 +39,10 @@ for i in range(len(fish_list)):
 difficulty_level = 1
 
 def play_music():
-    playsound("Procrastinating Jazz.mp3")
+    # append script path to mp3 file
+    script_path = os.path.dirname(os.path.realpath(__file__))
 
-
+    playsound(os.path.join(script_path, "Procrastinating Jazz.mp3"))
 
 async def menu():
     global caught_fish
