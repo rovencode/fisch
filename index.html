@@ -1,15 +1,117 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fish Banner</title>
-</head>
-<body>
-    <h1>Welcome to the Fish Website</h1>
+import java.util.*;
+import java.util.concurrent.*;
 
-    <!-- Display the fish-banner.png -->
-    <img src="fish-banner.png" alt="Fish Banner" width="100%" height="auto">
+public class FishingGame {
+    private static final List<String> fishList = Arrays.asList(
+        "Flimsy Fish", "Training Fish", "Plastic Fish", "Carbon Fish", "Fast Fish",
+        "Lucky Fish", "Long Fish", "Steady Fish", "Nocturnal Fish", "Fortune Fish"
+    );
+    private static final List<String> rods = Arrays.asList(
+        "Flimsy Rod", "Training Rod", "Plastic Rod", "Carbon Rod", "Fast Rod"
+    );
+    private static final Map<String, Integer> inventory = new HashMap<>();
+    private static int fishCredit = 550;
+    private static int rodBoost = 10;
+    
+    static {🎣", 0
+        for (String rod : rods) inventory.put(rod + ");
+        for (String fish : fishList) inventory.put(fish + "🐟", 0);
+    }
 
-</body>
-</html>
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("\n     MENU📕     ");
+            System.out.println("-----fish-----🦈");
+            System.out.println("-----shop-----🪙");
+            System.out.println("--inventory---🧰");
+            System.out.println("---settings---⚙️");
+            System.out.print("Choose an option: ");
+            String choice = scanner.nextLine().toLowerCase();
+
+            switch (choice) {
+                case "fish":
+                    fishMenu(scanner);
+                    break;
+                case "shop":
+                    shopMenu(scanner);
+                    break;
+                case "inventory":
+                    System.out.println("Inventory: " + inventory);
+                    System.out.println("Credit: " + fishCredit + "💰");
+                    break;
+                case "settings":
+                    settingsMenu(scanner);
+                    break;
+                default:
+                    System.out.println("Invalid option, try again.");
+            }
+        }
+    }
+
+    private static void fishMenu(Scanner scanner) {
+        Random rand = new Random();
+        System.out.println("Write the correct number within 1 second to catch a fish");
+        int randomNum = rand.nextInt(10);
+        System.out.println("Number: " + randomNum);
+        
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<String> future = executor.submit(scanner::nextLine);
+        try {
+            String input = future.get(1, TimeUnit.SECONDS);
+            if (Integer.parseInt(input) == randomNum) {
+                String caughtFish = fishList.get(rand.nextInt(fishList.size())) + "🐟";
+                inventory.put(caughtFish, inventory.getOrDefault(caughtFish, 0) + 1);
+                fishCredit += 100;
+                System.out.println("You caught " + caughtFish);
+            } else {
+                System.out.println("You caught nothing❌");
+            }
+        } catch (Exception e) {
+            System.out.println("You caught nothing❌");
+        } finally {
+            executor.shutdown();
+        }
+    }
+
+    private static void shopMenu(Scanner scanner) {
+        System.out.println("Available rods:");
+        for (int i = 1; i < rods.size(); i++) {
+            System.out.println(rods.get(i) + " - " + (i * 1250) + "💰");
+        }
+        System.out.println("Your credit: " + fishCredit + "💰");
+        System.out.print("What would you like to buy? 🎣 ");
+        String buyItem = scanner.nextLine();
+
+        int price = rods.indexOf(buyItem) * 1250;
+        if (price > fishCredit || price <= 0) {
+            System.out.println("You can't afford that item.");
+        } else {
+            System.out.println(buyItem + " bought!");
+            fishCredit -= price;
+            inventory.put(buyItem + "🎣", inventory.getOrDefault(buyItem + "🎣", 0) + 1);
+            rodBoost = rods.indexOf(buyItem) + 11;
+        }
+    }
+
+    private static void settingsMenu(Scanner scanner) {
+        while (true) {
+            System.out.println("Settings ⚙️");
+            System.out.println("1. Directions 📜");
+            System.out.println("2. Quit ❌");
+            System.out.print("Choose an option: ");
+            String choice = scanner.nextLine();
+
+            switch (choice) {
+                case "1":
+                    System.out.println("Catch fish, upgrade rods, earn credit!");
+                    break;
+                case "2":
+                    return;
+                default:
+                    System.out.println("Invalid choice, try again.");
+            }
+        }
+    }
+}
+
